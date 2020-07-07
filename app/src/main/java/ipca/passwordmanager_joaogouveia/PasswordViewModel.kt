@@ -11,12 +11,12 @@ class PasswordViewModel(application: Application) : AndroidViewModel(application
 
     private val repository: PasswordRepository
 
-    val allWords: LiveData<List<gestaoPassword>>
+    val allPasswords: LiveData<List<gestaoPassword>>
 
     init {
-        val passDao = PasswordRoomDatabase.getDatabase(application).passDao()
+        val passDao = PasswordRoomDatabase.getDatabase(application, viewModelScope).passDao()
         repository = PasswordRepository(passDao)
-        allWords = repository.allPasswords
+        allPasswords = repository.allPasswords
     }
 
 
