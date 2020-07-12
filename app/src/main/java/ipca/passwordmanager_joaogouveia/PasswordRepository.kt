@@ -8,5 +8,10 @@ class PasswordRepository(private val passDao: passDao) {
 
     suspend fun insert(pass: gestaoPassword) {
         passDao.insert(pass)
+
+    }
+    suspend fun delete(pass: gestaoPassword) {
+        passDao.delete(pass)
+
     }
 }

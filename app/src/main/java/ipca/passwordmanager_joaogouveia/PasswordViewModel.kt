@@ -23,4 +23,8 @@ class PasswordViewModel(application: Application) : AndroidViewModel(application
     fun insert(pass: gestaoPassword) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(pass)
     }
+
+    fun delete(pass: gestaoPassword) = viewModelScope.launch(Dispatchers.IO) {
+        repository.delete(pass)
+    }
 }

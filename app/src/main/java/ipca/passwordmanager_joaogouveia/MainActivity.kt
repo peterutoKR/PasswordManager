@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,8 +14,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var PasswordViewModel: PasswordViewModel
+    private lateinit var passwordViewModel: PasswordViewModel
     private val newPasswordActivityRequestCode = 1
+    private val deletePasswordActivityRequestCode = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +26,16 @@ class MainActivity : AppCompatActivity() {
         val adapter = PasswordListAdapter(this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
-        PasswordViewModel = ViewModelProvider(this).get(PasswordViewModel::class.java)
-        PasswordViewModel.allPasswords.observe(this, Observer { words ->
+        passwordViewModel = ViewModelProvider(this).get(PasswordViewModel::class.java)
+        passwordViewModel.allPasswords.observe(this, Observer { words ->
             words?.let { adapter.setPasswords(it) }
         })
+
+        val button_delete = findViewById<Button>(R.id.button_delete)
+        button_delete.setOnClickListener {
+            val intent = Intent(this@MainActivity, PasswordDeleteActivity::class.java)
+            startActivity(intent)
+        }
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
@@ -39,16 +47,19 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == newPasswordActivityRequestCode && resultCode == Activity.RESULT_OK) {
-            data?.getStringExtra(NewPasswordActivity.EXTRA_REPLY)?.let {
-                val Password = gestaoPassword(it)
-                PasswordViewModel.insert(Password)
+            data?.getStringExtra(NewPasswordActivity.WORD_REPLY)?.let {
+                val Password = gestaoPassword(data.getStringExtra(NewPasswordActivity.WORD_REPLY),data.getStringExtra(NewPasswordActivity.SITE_REPLY), data.getStringExtra(NewPasswordActivity.DESC_REPLY), data.getStringExtra(NewPasswordActivity.DATA_REPLY))
+                passwordViewModel.insert(Password)
             }
-        } else {
-            Toast.makeText(
-                applicationContext,
-                R.string.empty_not_saved,
-                Toast.LENGTH_LONG).show()
         }
+        if (requestCode == deletePasswordActivityRequestCode && resultCode == Activity.RESULT_OK) {
+            data?.getStringExtra(PasswordDeleteActivity.WORD_REPLY)?.let {
+                val Password = gestaoPassword(data.getStringExtra(PasswordDeleteActivity.WORD_REPLY),data.getStringExtra(PasswordDeleteActivity.SITE_REPLY), data.getStringExtra(PasswordDeleteActivity.DESC_REPLY), data.getStringExtra(PasswordDeleteActivity.DATA_REPLY))
+                passwordViewModel.delete(Password)
+
+            }
+        }
+
     }
 }
 

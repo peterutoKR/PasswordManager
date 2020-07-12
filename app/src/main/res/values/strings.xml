@@ -3,5 +3,6 @@
     <string name="add_password">add_password</string>
     <string name="hint_word">Password...</string>
     <string name="button_save">Save</string>
+    <string name="button_delete">Delete</string>
     <string name="empty_not_saved">Password not saved because it is empty.</string>
 </resources>
